@@ -5,7 +5,6 @@
 
 - **網址**：https://script.google.com/macros/s/AKfycbysswFGv-ErRkaMmv0-fYc3fFHqe831pbfwfCk3ta0rytf7Np6iDq9TpyQK5ZPneCXDuA/exec
 - Apps Script 專案（擁有者 003@msbrow.com）：https://script.google.com/d/1DPoZxx81wyslaRGXDbP79koMhjOxndapnXmzJCyKQjA5SaxR6YgjhIpq/edit
-- 舊版 GitHub Pages 網站（手動更新 `data.json`）：https://003-snowbrow.github.io/MsBrow_Ranking/ ，去留見文末
 
 ## 運作方式
 
@@ -60,7 +59,7 @@ clasp 登入過期時（`clasp list` 回 `invalid_rapt`）先跑 `clasp login`�
 python3 tools/preview_gas.py
 ```
 
-開 http://localhost:5191 ，密碼 `msbrow2026`，資料用 `source/months.json`（舊版留下的解析結果，已被 git 忽略），
+開 http://localhost:5191 ，密碼 `msbrow2026`，資料用 `source/months.json`（本機的解析結果，已被 git 忽略），
 `google.script.run` 由 `tools/preview_gas.py` 模擬。
 
 ## 檔案
@@ -73,7 +72,6 @@ python3 tools/preview_gas.py
 | `gas/appsscript.json` | 時區、權限範圍、網頁應用程式設定 |
 | `gas/.clasp.json` | clasp 對應的 scriptId |
 | `tools/preview_gas.py` | 本機預覽伺服器 |
-| `index.html`、`data.json`、`tools/parse_kaohe.py`、`tools/build_months.py`、`tools/encrypt.mjs`、`tools/decrypt.mjs` | **舊版** GitHub Pages 網站與其工具 |
 
 ## 資料格式（`getData` 回傳）
 
@@ -89,33 +87,6 @@ python3 tools/preview_gas.py
 - 試算表中 `#DIV/0!` 之類無法計算的值存為 `null`，該美睫師排在最後，並在網頁上方提示。
 - 密碼錯誤回 `{ ok: false, error: "bad_password" }`。
 
-## 舊版 GitHub Pages 網站怎麼辦
+## 歷史
 
-舊版（https://003-snowbrow.github.io/MsBrow_Ranking/ ）還能開，但**不會自動更新**，密碼也和新版分開管理，久了會不同步。
-
-- **下架（建議）**：GitHub 專案 → Settings → Pages → Source 選「None」。repo 裡的 `index.html`、`data.json` 可以留著當紀錄，也可以一併刪掉。
-- **保留**：當備援用，資料要照下面的舊流程手動更新。
-
-<details>
-<summary>舊版更新流程（只在保留 GitHub Pages 版時需要）</summary>
-
-資料以密碼加密後放在 `data.json`（AES-256-GCM，PBKDF2-SHA256 30 萬次迭代），網頁在瀏覽器中解密。
-
-1. 在 Google 試算表開啟當月薪資單 →「檔案 → 下載 → Microsoft Excel (.xlsx)」。
-2. 開舊版網站 → 右上角「更新資料」→ 把 .xlsx 拖進去 → 確認月份與預覽 →「套用並下載 data.json」。
-3. 到 GitHub 專案覆蓋 `data.json` 並 Commit。約一分鐘後網站更新。
-
-用指令：
-
-```bash
-cd ~/ms-brow-kaohe-ranking
-python3 tools/parse_kaohe.py 薪資單_2.2_26_10.xlsx source/months/26-10.json   # 需要 openpyxl
-python3 tools/build_months.py
-KAOHE_PASSWORD='目前密碼' node tools/encrypt.mjs
-git add data.json && git commit -m "2026-10 考核資料" && git push
-```
-
-變更舊版密碼：網站「更新資料」→「變更密碼」會下載一份用新密碼加密的 `data.json`，覆蓋到 GitHub；或 `KAOHE_PASSWORD='新密碼' node tools/encrypt.mjs`。
-本機預覽：`python3 -m http.server 5190` 後開 http://localhost:5190 。
-
-</details>
+2026-10-15 之前曾有一版 GitHub Pages 靜態網站（加密的 `data.json` 需手動更新），已下架並移除；此 repo 現在只放 Apps Script 版。
