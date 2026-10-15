@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F5F3F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15111A" media="(prefers-color-scheme: dark)">
+<title>MS.BROW 美睫師考核排名</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: one centred column (max 1120px). A password gate covers everything until the data file is decrypted.
+   Then: sticky month rail; hero = podium (top 3) + team totals; full ranking table; trend chart. */
+:root{
+  --bg:#F5F3F7; --surface:#FFFFFF; --surface-2:#EEEAF2; --fg:#231C2A; --fg-2:#5E5668; --muted:#8E8597; --line:#E2DCE8;
+  --accent:#A3306A; --accent-ink:#FFFFFF; --accent-soft:#F6E4ED;
+  --gold:#C39B2B; --silver:#8F98A3; --bronze:#B3784A;
+  --up:#0ca30c; --down:#d03b3b;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4;
+  --p1:#7A1F4E; --p2:#A3306A; --p3:#C0588A; --p4:#D98AAD; --p5:#EDBED1;
+  --font-display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --font-num:"Manrope","Noto Sans TC","PingFang TC",system-ui,sans-serif;
+  --shadow:0 1px 2px rgba(35,28,42,.06),0 10px 28px -16px rgba(35,28,42,.22);
+  --radius:14px;
+  color-scheme:light;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15111A; --surface:#1F1926; --surface-2:#2A2333; --fg:#F2EDF5; --fg-2:#B9B0C2; --muted:#857C8F; --line:#352D3F;
+    --accent:#E27CAE; --accent-ink:#1F1926; --accent-soft:#3A2435;
+    --gold:#D4AE3F; --silver:#A5ADB7; --bronze:#C68A5A;
+    --up:#2fc02f; --down:#ef6a6a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+    --p1:#F0A9CB; --p2:#E27CAE; --p3:#BF5D8E; --p4:#94436D; --p5:#6A2E4F;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 28px -16px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+img{max-width:100%}
+.num,.stat-value,.pod-score,.rank,.score-val,td.num,.tick,.end-label,.delta,.preview td.num{font-family:var(--font-num);font-variant-numeric:tabular-nums}
+
+/* ---- gate ---- */
+.gate{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:radial-gradient(60% 50% at 50% 0%,var(--accent-soft),transparent 70%),var(--bg)}
+.gate-card{width:min(420px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:30px 28px 26px;display:flex;flex-direction:column;gap:16px}
+.gate-card .eyebrow{text-align:center}
+.gate-card h1{font-size:26px;text-align:center}
+.gate-lock{width:48px;height:48px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto}
+.gate-card p.lead{color:var(--fg-2);text-align:center;font-size:14px}
+.pw-row{display:flex;gap:8px}
+.pw-row input{flex:1;min-width:0;font:inherit;font-size:16px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg)}
+.pw-row input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.pw-row .btn{padding-inline:12px;border-radius:12px}
+.gate-opts{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;color:var(--fg-2);flex-wrap:wrap}
+.gate-opts label{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.gate-err{color:var(--down);font-size:14px;text-align:center;min-height:1.4em}
+.gate .btn-primary{width:100%;padding:12px;border-radius:12px;font-size:16px}
+.gate-foot{text-align:center;font-size:12px;color:var(--muted)}
+
+.page{max-width:1120px;margin:0 auto;padding-block:28px 56px;padding-inline:clamp(16px,3vw,32px);display:flex;flex-direction:column;gap:22px}
+
+/* ---- header ---- */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;font-family:var(--font-num)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.4vw,38px);line-height:1.15;letter-spacing:.01em;margin-top:4px}
+.tagline{color:var(--fg-2);margin-top:6px;max-width:60ch}
+.top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,transform .1s;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{filter:brightness(1.06);border-color:var(--accent)}
+.btn-ghost{background:transparent}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+:where(button,input,select,summary):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- month rail ---- */
+.months{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:8px;overflow-x:auto;padding-block:8px;margin-inline:-4px;padding-inline:4px;background:linear-gradient(var(--bg) 70%,transparent);scrollbar-width:none}
+.months::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px;cursor:pointer;color:var(--fg-2);transition:background .15s,color .15s,border-color .15s}
+.chip:hover{border-color:var(--muted);color:var(--fg)}
+.chip.is-active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* ---- hero: podium + team ---- */
+.hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pod{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;min-width:0}
+.pod::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--medal)}
+.pod-1{--medal:var(--gold)} .pod-2{--medal:var(--silver)} .pod-3{--medal:var(--bronze)}
+.pod-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.medal{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--medal);color:#fff;font-family:var(--font-num);font-weight:800;font-size:16px}
+.pod-name{font-family:var(--font-display);font-size:22px;font-weight:700;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;line-height:1.2}
+.lv{font-family:var(--font-num);font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--fg-2);background:var(--surface-2);border-radius:6px;padding:2px 6px;vertical-align:middle;white-space:nowrap}
+.pod-score{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+.pod-score .num{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.pod-score .unit{font-size:12px;color:var(--muted)}
+.pod-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px;margin:8px 0 0;padding-top:10px;border-top:1px dashed var(--line)}
+.pod-metrics div{min-width:0}
+.pod-metrics dt{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-metrics dd{margin:0;font-family:var(--font-num);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+
+.team{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;min-width:0}
+.team-title{font-size:15px;font-weight:700;display:flex;flex-direction:column;gap:2px}
+.team-sub{font-size:12px;color:var(--muted);font-weight:500}
+.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
+.stat{display:flex;flex-direction:column;gap:1px;min-width:0}
+.stat-label{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-value{font-size:22px;font-weight:800;letter-spacing:-.01em;line-height:1.15}
+.stat-diff{font-size:12px;font-family:var(--font-num);font-variant-numeric:tabular-nums;color:var(--muted)}
+.stat-diff.up{color:var(--up)} .stat-diff.down{color:var(--down)}
+
+/* ---- sections ---- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px clamp(14px,2vw,22px) 16px;min-width:0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.sec-head h2{font-size:18px;font-weight:700}
+.hint{font-size:12.5px;color:var(--muted)}
+
+/* ---- table ---- */
+.table-wrap{overflow-x:auto;margin-inline:-6px;padding-inline:6px}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:860px}
+thead th{position:sticky;top:0;background:var(--surface);z-index:1;font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:0 8px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+thead th.num{text-align:right}
+thead th button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:4px 0;font-weight:600}
+thead th button:hover{color:var(--fg)}
+thead th.is-sorted button{color:var(--accent)}
+.sort-ind{font-size:10px;width:8px;display:inline-block}
+tbody td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle;position:relative}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--surface-2)}
+tbody tr.is-tracked td{background:color-mix(in srgb,var(--accent-soft) 60%,transparent)}
+td.num{text-align:right;font-weight:600;font-size:14.5px}
+td.num > span{position:relative;z-index:1}
+.bar{position:absolute;left:8px;right:8px;bottom:5px;height:3px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.bar::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w,0%);background:var(--accent);opacity:.55;border-radius:2px}
+.rank-cell{width:56px}
+.rank{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 6px;border-radius:8px;font-weight:800;font-size:14px;background:var(--surface-2);color:var(--fg-2)}
+.rank.r1{background:var(--gold);color:#fff}.rank.r2{background:var(--silver);color:#fff}.rank.r3{background:var(--bronze);color:#fff}
+.name-cell{position:sticky;left:0;background:var(--surface);z-index:2;min-width:150px;white-space:nowrap}
+tbody tr:hover .name-cell{background:var(--surface-2)}
+tbody tr.is-tracked .name-cell{background:color-mix(in srgb,var(--accent-soft) 60%,var(--surface))}
+.name-btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;padding:2px 0;margin-right:8px}
+.name-btn:hover{color:var(--accent)}
+.name-btn .dot{width:10px;height:10px;border-radius:50%;background:var(--line);flex:0 0 auto;transition:background .15s}
+.score-cell{min-width:170px}
+.score{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.score-val{font-weight:800;font-size:15px}
+.stack{display:flex;gap:2px;width:100%;height:8px}
+.stack i{display:block;height:100%;border-radius:2px;background:var(--seg)}
+.stack .solo{background:var(--accent);border-radius:4px}
+.delta{font-size:12.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--surface-2);color:var(--fg-2);display:inline-block}
+.delta.up{color:var(--up);background:color-mix(in srgb,var(--up) 12%,transparent)}
+.delta.down{color:var(--down);background:color-mix(in srgb,var(--down) 12%,transparent)}
+.delta.new{color:var(--accent);background:var(--accent-soft)}
+.parts-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12px;color:var(--fg-2)}
+.parts-legend span{display:inline-flex;align-items:center;gap:6px}
+.parts-legend i{width:12px;height:8px;border-radius:2px;display:inline-block;background:var(--seg)}
+
+/* ---- trend ---- */
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:999px;padding:4px}
+.seg button{all:unset;cursor:pointer;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--fg-2)}
+.seg button:hover{color:var(--fg)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;min-height:30px}
+.track{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 6px 3px 10px;font-size:13px;font-weight:600;background:var(--surface)}
+.track .dot{width:10px;height:10px;border-radius:50%}
+.track button{all:unset;cursor:pointer;width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;color:var(--muted);font-size:14px;line-height:1}
+.track button:hover{background:var(--surface-2);color:var(--fg)}
+.chart{position:relative;width:100%;min-width:0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .band{fill:var(--accent-soft);opacity:.7}
+.chart .tick{fill:var(--muted);font-size:11.5px}
+.chart .tick.year{fill:var(--muted);font-size:10px;opacity:.8}
+.chart .line{fill:none;stroke:var(--muted);stroke-opacity:.3;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.chart .line.sel{stroke-opacity:1;stroke-width:2.5}
+.chart .line.hover{stroke-opacity:.9;stroke:var(--fg);stroke-width:2}
+.chart .hit{fill:none;stroke:transparent;stroke-width:14;pointer-events:stroke;cursor:pointer}
+.chart .pt{stroke:var(--surface);stroke-width:2}
+.chart .end-label{fill:var(--fg);font-size:12px;font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.tooltip{position:absolute;z-index:6;pointer-events:none;background:var(--fg);color:var(--bg);border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.4;box-shadow:var(--shadow);max-width:220px}
+.tooltip b{font-family:var(--font-num);font-size:13px}
+.tooltip .tt-row{display:flex;justify-content:space-between;gap:14px}
+
+/* ---- notices ---- */
+.notice{font-size:13px;color:var(--fg-2);background:var(--surface-2);border-radius:10px;padding:10px 14px}
+.notice.error{color:var(--down);background:color-mix(in srgb,var(--down) 10%,transparent)}
+.notice.ok{color:var(--up);background:color-mix(in srgb,var(--up) 10%,transparent)}
+
+/* ---- overlay panel ---- */
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(20,12,24,.45);display:flex;align-items:flex-start;justify-content:center;padding:clamp(12px,4vh,48px) 16px;overflow-y:auto}
+.panel{background:var(--surface);color:var(--fg);border-radius:18px;width:min(720px,100%);box-shadow:var(--shadow);padding:20px clamp(16px,3vw,26px) 22px;display:flex;flex-direction:column;gap:16px;border:1px solid var(--line)}
+.panel header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel h2{font-size:19px;font-weight:700}
+.panel h3{font-size:15px;font-weight:700}
+.icon-btn{all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+.icon-btn:hover{background:var(--surface-2);color:var(--fg)}
+.steps{margin:0;padding-left:22px;color:var(--fg-2);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.steps b{color:var(--fg);font-weight:600}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--line);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;color:var(--fg-2);transition:border-color .15s,background .15s;position:relative}
+.drop:hover,.drop.is-over{border-color:var(--accent);background:var(--accent-soft)}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.drop strong{color:var(--fg)}
+.drop small{font-size:12px;color:var(--muted)}
+.field{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.field label{font-weight:600;font-size:14px}
+select,input[type=text],input[type=password]{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.meta{font-size:13px;color:var(--fg-2)}
+.warn-list{margin:0;padding-left:18px;font-size:13px;color:var(--down);display:flex;flex-direction:column;gap:2px}
+.preview-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;max-height:300px;overflow-y:auto}
+.preview{width:100%;min-width:560px;border-collapse:collapse;font-size:13px}
+.preview th{position:sticky;top:0;background:var(--surface-2);text-align:left;padding:6px 8px;font-weight:600;color:var(--fg-2);font-size:12px}
+.preview td{padding:5px 8px;border-top:1px solid var(--line)}
+.preview th.num,.preview td.num{text-align:right}
+.actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+details.sub{border-top:1px solid var(--line);padding-top:12px}
+details.sub summary{cursor:pointer;font-size:14px;color:var(--fg-2);font-weight:600}
+details.sub .inner{display:flex;flex-direction:column;gap:10px;margin-top:10px;font-size:14px;color:var(--fg-2)}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:5px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.toast.error{background:var(--down);color:#fff}
+
+footer.foot{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .podium{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-value{font-size:19px}
+  .sec-head{align-items:flex-start;flex-direction:column}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<section class="gate" id="gate">
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <div class="gate-lock" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+    </div>
+    <div>
+      <p class="eyebrow">MS.BROW · 事業一部</p>
+      <h1>美睫師考核排名</h1>
+    </div>
+    <p class="lead" id="gateLead">請輸入密碼以檢視每月考核排名。</p>
+    <div class="pw-row">
+      <input type="password" id="pw" placeholder="密碼" autocomplete="current-password" aria-label="密碼" required>
+      <button type="button" class="btn" id="pwToggle" aria-label="顯示密碼">顯示</button>
+    </div>
+    <div class="gate-opts">
+      <label><input type="checkbox" id="remember"> 記住這台裝置</label>
+      <span id="gateErr" class="gate-err" role="alert"></span>
+    </div>
+    <button type="submit" class="btn btn-primary" id="gateBtn">進入</button>
+    <p class="gate-foot">資料以密碼加密保存，密碼只在你的瀏覽器中使用，不會送到任何伺服器。</p>
+  </form>
+</section>
+
+<div class="page" id="app" hidden>
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">MS.BROW · 事業一部</p>
+      <h1>美睫師考核排名</h1>
+      <p class="tagline">依每月薪資單「一部考核總表」的達標率排序，並列出當月客數、新客、入會、現場預約、IG 分享與 Google 好評。</p>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn btn-ghost" id="btnLogout">登出</button>
+      <button type="button" class="btn btn-primary" id="btnUpdate">更新資料</button>
+    </div>
+  </header>
+
+  <nav class="months" id="monthNav" aria-label="選擇月份"></nav>
+
+  <section class="hero" id="hero">
+    <div class="podium" id="podium"></div>
+    <aside class="team" id="team"></aside>
+  </section>
+
+  <section class="card" id="rankingSec">
+    <div class="sec-head">
+      <h2 id="rankingTitle">完整排名</h2>
+      <p class="hint">點欄位標題可排序；點美睫師名字可在下方趨勢圖中追蹤（最多 5 位）。</p>
+    </div>
+    <div class="table-wrap">
+      <table id="rankTable" aria-describedby="rankingTitle">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="parts-legend" id="partsLegend"></div>
+  </section>
+
+  <section class="card" id="trendSec">
+    <div class="sec-head">
+      <h2>逐月趨勢</h2>
+      <div class="seg-row">
+        <div class="seg" id="metricSeg" role="group" aria-label="趨勢指標"></div>
+        <div class="seg" id="rangeSeg" role="group" aria-label="顯示範圍" hidden>
+          <button type="button" data-range="recent" aria-pressed="true">近 12 個月</button>
+          <button type="button" data-range="all" aria-pressed="false">全部</button>
+        </div>
+      </div>
+    </div>
+    <div class="chips" id="trendChips"></div>
+    <div class="chart" id="chart"></div>
+    <div class="tooltip" id="tip" hidden></div>
+    <p class="hint">淺灰線為所有美睫師；點線條或表格中的名字可加入追蹤。底色標示目前選擇的月份。</p>
+  </section>
+
+  <footer class="foot" id="foot">
+    <span id="footSource"></span>
+    <span>達標率 = IG分享 + 新客Google好評率 + 新客入會率 + 現場預約率（或客量）+ 紀錄照上傳率，各項滿分 20%。</span>
+  </footer>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+    <header>
+      <h2 id="panelTitle">更新考核資料</h2>
+      <button type="button" class="icon-btn" id="btnClose" aria-label="關閉">×</button>
+    </header>
+    <ol class="steps">
+      <li>在 Google 試算表開啟當月薪資單，選 <b>檔案 → 下載 → Microsoft Excel (.xlsx)</b>。</li>
+      <li>把檔案拖到下方或點選檔案。網頁只讀「<b>一部考核總表</b>」第 3 列（D 欄起）的名字與各項數據，檔案不會離開你的瀏覽器。</li>
+      <li>確認月份與預覽後按「套用並下載 data.json」。畫面會立即更新，並下載一份用目前密碼加密好的 <code>data.json</code>。</li>
+      <li>把下載的 <code>data.json</code> 覆蓋到網站專案裡的同名檔案（見下方「如何發布」），其他人打開網址就會看到新月份。</li>
+    </ol>
+    <label class="drop" id="drop" for="fileInput">
+      <input type="file" id="fileInput" accept=".xlsx,.xlsm,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+      <strong>拖放薪資單 .xlsx 到這裡，或點選選擇檔案</strong>
+      <small>同月份重新匯入會覆蓋舊資料。</small>
+    </label>
+    <div class="notice error" id="parseError" hidden></div>
+    <div id="parseResult" hidden style="display:flex;flex-direction:column;gap:12px">
+      <div class="field">
+        <label for="yearSel">資料月份</label>
+        <select id="yearSel"></select>
+        <select id="monthSel"></select>
+        <span class="meta" id="overwriteNote"></span>
+      </div>
+      <p class="meta" id="parseMeta"></p>
+      <ul class="warn-list" id="parseWarnings" hidden></ul>
+      <div class="preview-wrap"><table class="preview" id="previewTable"></table></div>
+      <div class="actions">
+        <button type="button" class="btn" id="btnCancel">取消</button>
+        <button type="button" class="btn btn-primary" id="btnSave">套用並下載 data.json</button>
+      </div>
+    </div>
+    <div class="notice ok" id="saveNote" hidden></div>
+    <details class="sub" id="publishHelp">
+      <summary>如何發布到網站（覆蓋 data.json）</summary>
+      <div class="inner">
+        <span>1. 打開網站專案 <a id="repoLink" href="#" target="_blank" rel="noopener">GitHub 專案頁</a>，點進 <code>data.json</code>，按右上角鉛筆旁的「⋯」→「Upload files」或直接按「Edit」貼上內容，再按 <b>Commit changes</b>。</span>
+        <span>2. 約一分鐘後網站就會更新。重新整理網頁即可看到。</span>
+        <span>3. 嫌麻煩也可以把 .xlsx 或 data.json 直接交給 Claude，請它更新網站。</span>
+      </div>
+    </details>
+    <details class="sub" id="pwBox">
+      <summary>變更密碼</summary>
+      <div class="inner">
+        <span>輸入新密碼後會下載一份用新密碼加密的 <code>data.json</code>；覆蓋到網站後，所有人就要用新密碼才能進入。</span>
+        <div class="field">
+          <label for="newPw">新密碼</label>
+          <input type="password" id="newPw" autocomplete="new-password" placeholder="至少 6 個字">
+          <input type="password" id="newPw2" autocomplete="new-password" placeholder="再輸入一次">
+          <button type="button" class="btn" id="btnChangePw">產生並下載</button>
+        </div>
+        <span class="meta" id="pwNote"></span>
+      </div>
+    </details>
+    <details class="sub" id="deleteBox">
+      <summary>移除月份</summary>
+      <div class="inner">
+        <span id="deleteLabel"></span>
+        <div class="actions" style="justify-content:flex-start">
+          <button type="button" class="btn" id="btnDelete">移除此月份並下載 data.json</button>
+        </div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const REPO_URL = 'https://github.com/003-snowbrow/MsBrow_Ranking';
+
+const METRICS = [
+  { key: 'clients',    label: '當月客數',     short: '客數' },
+  { key: 'newClients', label: '當月新客數',   short: '新客' },
+  { key: 'members',    label: '當月入會客數', short: '入會' },
+  { key: 'walkIn',     label: '現場預約客數', short: '現場預約' },
+  { key: 'ig',         label: 'IG分享數',     short: 'IG分享' },
+  { key: 'google',     label: 'Google好評',   short: 'Google好評' },
+];
+const PARTS = [
+  { key: 'ig',     label: 'IG分享',          color: 'var(--p1)' },
+  { key: 'google', label: '新客Google好評率', color: 'var(--p2)' },
+  { key: 'member', label: '新客入會率',       color: 'var(--p3)' },
+  { key: 'walkIn', label: '現場預約率／客量',  color: 'var(--p4)' },
+  { key: 'photo',  label: '紀錄照上傳率',     color: 'var(--p5)' },
+];
+const SERIES = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)'];
+const TREND_METRICS = [
+  { key: 'rank', label: '名次' }, { key: 'score', label: '達標率' },
+  ...METRICS.map(m => ({ key: m.key, label: m.short })),
+];
+
+const state = {
+  months: new Map(), order: [], current: null, generatedAt: null,
+  slots: [null, null, null, null, null], metric: 'rank', range: 'recent',
+  sort: { key: 'rank', dir: 'asc' },
+  password: null, dataFile: null, pending: null, hover: null,
+};
+const rankCache = new Map();
+
+/* ---------- helpers ---------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cap = n => n ? n.charAt(0).toUpperCase() + n.slice(1) : '';
+const monthLabel = id => { const [y, m] = id.split('-'); return `${+y}年${+m}月`; };
+const pct = v => v == null ? '—' : (v * 100).toFixed(1) + '%';
+const fmt = v => v == null ? '—' : Number.isInteger(v) ? v.toLocaleString('zh-TW') : (+v).toFixed(1);
+const round4 = v => Math.round(v * 10000) / 10000;
+const sum = (list, key) => list.reduce((a, s) => a + (s[key] || 0), 0);
+const tracked = () => state.slots.filter(Boolean);
+const slotOf = name => state.slots.indexOf(name);
+const colorOf = name => { const i = slotOf(name); return i >= 0 ? SERIES[i] : null; };
+
+function remember() {
+  try { localStorage.setItem('kaohe-prefs', JSON.stringify({ current: state.current, slots: state.slots, metric: state.metric, range: state.range })); } catch (e) {}
+}
+function restore() {
+  try {
+    const p = JSON.parse(localStorage.getItem('kaohe-prefs') || 'null');
+    if (p) { state.current = p.current || null; if (Array.isArray(p.slots) && p.slots.length === 5) state.slots = p.slots; if (p.metric) state.metric = p.metric; if (p.range) state.range = p.range; }
+  } catch (e) {}
+}
+
+/* ---------- crypto ---------- */
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+function b64e(u8) { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); }
+async function deriveKey(password, salt, iter, usage) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, usage);
+}
+async function decryptFile(file, password) {
+  const key = await deriveKey(password, b64d(file.salt), file.iter, ['decrypt']);
+  const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64d(file.iv) }, key, b64d(file.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function encryptPayload(obj, password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 300000;
+  const key = await deriveKey(password, salt, iter, ['encrypt']);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(obj))));
+  return { v: 1, kdf: 'PBKDF2-SHA256', iter, salt: b64e(salt), iv: b64e(iv), ct: b64e(ct) };
+}
+function currentPayload() {
+  return { months: state.order.map(id => state.months.get(id)), generatedAt: new Date().toISOString() };
+}
+async function downloadEncrypted(password) {
+  const file = await encryptPayload(currentPayload(), password);
+  const blob = new Blob([JSON.stringify(file)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = 'data.json'; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* ---------- ranking ---------- */
+function ranked(id) {
+  if (rankCache.has(id)) return rankCache.get(id);
+  const doc = state.months.get(id);
+  if (!doc) return [];
+  const list = (doc.staff || []).map(s => ({ ...s }));
+  list.sort((a, b) => {
+    const as = a.score == null ? -Infinity : a.score, bs = b.score == null ? -Infinity : b.score;
+    if (bs !== as) return bs - as;
+    return (b.clients || 0) - (a.clients || 0);
+  });
+  let rank = 0, prev = null;
+  list.forEach((s, i) => {
+    if (s.score == null) { s.rank = null; return; }
+    const r = Math.round(s.score * 10000);
+    if (prev === null || r !== prev) { rank = i + 1; prev = r; }
+    s.rank = rank;
+  });
+  rankCache.set(id, list);
+  return list;
+}
+const lookup = (id, name) => ranked(id).find(s => s.name === name) || null;
+const prevId = id => { const i = state.order.indexOf(id); return i > 0 ? state.order[i - 1] : null; };
+
+function rankDelta(name, id) {
+  const p = prevId(id);
+  if (!p) return { type: 'none' };
+  const cur = lookup(id, name), prev = lookup(p, name);
+  if (!prev) return { type: 'new' };
+  if (!cur || cur.rank == null || prev.rank == null) return { type: 'none' };
+  const d = prev.rank - cur.rank;
+  return d > 0 ? { type: 'up', n: d } : d < 0 ? { type: 'down', n: -d } : { type: 'same' };
+}
+function deltaHTML(d) {
+  switch (d.type) {
+    case 'up': return `<span class="delta up" title="較上月上升 ${d.n} 名">▲${d.n}</span>`;
+    case 'down': return `<span class="delta down" title="較上月下降 ${d.n} 名">▼${d.n}</span>`;
+    case 'same': return `<span class="delta same" title="與上月相同">—</span>`;
+    case 'new': return `<span class="delta new" title="上月無資料">新</span>`;
+    default: return '';
+  }
+}
+function partValue(s, key) {
+  const p = s.parts || {};
+  if (key === 'walkIn') return p.walkIn != null ? p.walkIn : (p.volume != null ? p.volume : null);
+  return p[key] != null ? p[key] : null;
+}
+
+/* ---------- rendering ---------- */
+function setMonths(docs) {
+  state.months = new Map(docs.filter(d => d && /^\d{4}-\d{2}$/.test(d.month)).map(d => [d.month, d]));
+  state.order = [...state.months.keys()].sort();
+  rankCache.clear();
+  if (!state.current || !state.months.has(state.current)) state.current = state.order[state.order.length - 1] || null;
+}
+function renderAll() {
+  if (!state.order.length) {
+    $('#monthNav').innerHTML = ''; $('#podium').innerHTML = '';
+    $('#team').innerHTML = '<p class="hint">尚無考核資料，請用「更新資料」匯入薪資單。</p>';
+    $('#rankTable thead').innerHTML = ''; $('#rankTable tbody').innerHTML = ''; $('#chart').innerHTML = ''; $('#trendChips').innerHTML = '';
+    return;
+  }
+  renderMonths(); renderHero(); renderTable(); renderMetricSeg(); renderChips(); renderTrend(); renderFoot();
+}
+
+function renderMonths() {
+  const nav = $('#monthNav'); nav.innerHTML = '';
+  state.order.forEach(id => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip' + (id === state.current ? ' is-active' : '');
+    b.setAttribute('aria-pressed', id === state.current);
+    b.textContent = monthLabel(id);
+    b.addEventListener('click', () => { state.current = id; remember(); renderAll(); });
+    nav.append(b);
+  });
+  const active = nav.querySelector('.is-active');
+  if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest', inline: 'center' });
+}
+
+function renderHero() {
+  const id = state.current, doc = state.months.get(id), list = ranked(id);
+  const top = list.filter(s => s.rank != null).slice(0, 3);
+  $('#podium').innerHTML = top.map((s, i) => `
+    <article class="pod pod-${i + 1}">
+      <div class="pod-head"><span class="medal" aria-label="第 ${s.rank} 名">${s.rank}</span>${deltaHTML(rankDelta(s.name, id))}</div>
+      <h3 class="pod-name">${esc(cap(s.name))}${s.level != null ? ` <span class="lv">Lv.${esc(s.level)}</span>` : ''}</h3>
+      <p class="pod-score"><span class="num">${pct(s.score)}</span><span class="unit">達標率</span></p>
+      <dl class="pod-metrics">${METRICS.map(m => `<div><dt>${m.label}</dt><dd>${fmt(s[m.key])}</dd></div>`).join('')}</dl>
+    </article>`).join('');
+  const p = prevId(id), prevList = p ? ranked(p) : null;
+  const stats = METRICS.map(m => {
+    const v = sum(list, m.key);
+    let diff = '';
+    if (prevList) {
+      const d = v - sum(prevList, m.key);
+      diff = `<span class="stat-diff ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' : ''}${d.toLocaleString('zh-TW')} 較上月</span>`;
+    }
+    return `<div class="stat"><span class="stat-label">${m.label}</span><span class="stat-value">${fmt(v)}</span>${diff}</div>`;
+  }).join('');
+  $('#team').innerHTML = `
+    <h2 class="team-title">團隊合計<span class="team-sub">${esc(doc.label || monthLabel(id))} · ${list.length} 位美睫師${doc.range ? ' · ' + esc(doc.range) : ''}</span></h2>
+    <div class="team-grid">${stats}</div>`;
+}
+
+const COLS = [
+  { key: 'rank', label: '名次', num: true },
+  { key: 'name', label: '美睫師' },
+  { key: 'score', label: '達標率', num: true },
+  ...METRICS.map(m => ({ key: m.key, label: m.label, num: true, bar: true })),
+  { key: 'delta', label: '較上月', num: true, sortable: false },
+];
+function cmpVals(a, b, dir, isText) {
+  if (a == null && b == null) return 0;
+  if (a == null) return 1; if (b == null) return -1;
+  const r = isText ? String(a).localeCompare(String(b)) : a - b;
+  return dir === 'asc' ? r : -r;
+}
+function renderTable() {
+  const id = state.current;
+  const list = [...ranked(id)];
+  const { key, dir } = state.sort;
+  if (key !== 'rank') list.sort((a, b) => cmpVals(a[key], b[key], dir, key === 'name'));
+  else if (dir === 'desc') list.reverse();
+  const max = {}; METRICS.forEach(m => { max[m.key] = Math.max(0, ...list.map(s => s[m.key] || 0)); });
+  $('#rankTable thead').innerHTML = '<tr>' + COLS.map(c => {
+    const sorted = key === c.key;
+    const aria = sorted ? (dir === 'asc' ? 'ascending' : 'descending') : 'none';
+    const inner = c.sortable === false ? esc(c.label)
+      : `<button type="button" data-sort="${c.key}">${esc(c.label)}<span class="sort-ind">${sorted ? (dir === 'asc' ? '↑' : '↓') : ''}</span></button>`;
+    return `<th scope="col" class="${c.num ? 'num' : ''} ${sorted ? 'is-sorted' : ''}" aria-sort="${aria}">${inner}</th>`;
+  }).join('') + '</tr>';
+  $('#rankTable tbody').innerHTML = list.map(s => {
+    const color = colorOf(s.name);
+    const parts = PARTS.map(p => ({ ...p, v: partValue(s, p.key) }));
+    const hasParts = parts.some(p => p.v != null);
+    const stack = s.score == null ? ''
+      : hasParts
+        ? `<div class="stack" title="${parts.map(p => `${p.label} ${pct(p.v)}`).join('、')}">${parts.filter(p => p.v > 0).map(p => `<i style="--seg:${p.color};flex:0 0 calc(${(p.v * 100).toFixed(2)}% - 2px)"></i>`).join('')}</div>`
+        : `<div class="stack"><i class="solo" style="flex:0 0 ${(s.score * 100).toFixed(2)}%"></i></div>`;
+    return `<tr class="${color ? 'is-tracked' : ''}" data-name="${esc(s.name)}">
+      <td class="num rank-cell"><span class="rank ${s.rank != null && s.rank <= 3 ? 'r' + s.rank : ''}">${s.rank == null ? '–' : s.rank}</span></td>
+      <td class="name-cell"><button type="button" class="name-btn" data-track="${esc(s.name)}" title="${color ? '取消追蹤' : '加入趨勢圖追蹤'}"><span class="dot" style="${color ? `background:${color}` : ''}"></span>${esc(cap(s.name))}</button>${s.level != null ? `<span class="lv">Lv.${esc(s.level)}</span>` : ''}</td>
+      <td class="num score-cell"><div class="score"><span class="score-val">${pct(s.score)}</span>${stack}</div></td>
+      ${METRICS.map(m => `<td class="num"><span>${fmt(s[m.key])}</span><i class="bar" style="--w:${max[m.key] ? ((s[m.key] || 0) / max[m.key] * 100).toFixed(1) : 0}%"></i></td>`).join('')}
+      <td class="num">${deltaHTML(rankDelta(s.name, id))}</td>
+    </tr>`;
+  }).join('');
+  $('#partsLegend').innerHTML = `<span style="color:var(--muted)">達標率組成</span>` + PARTS.map(p => `<span><i style="--seg:${p.color}"></i>${p.label}</span>`).join('');
+}
+
+function renderMetricSeg() {
+  $('#metricSeg').innerHTML = TREND_METRICS.map(m => `<button type="button" data-metric="${m.key}" aria-pressed="${state.metric === m.key}">${m.label}</button>`).join('');
+  const rs = $('#rangeSeg'); rs.hidden = state.order.length <= 12;
+  rs.querySelectorAll('[data-range]').forEach(b => b.setAttribute('aria-pressed', b.dataset.range === state.range));
+}
+function renderChips() {
+  const box = $('#trendChips');
+  const names = tracked();
+  box.innerHTML = names.length
+    ? names.map(n => `<span class="track"><span class="dot" style="background:${colorOf(n)}"></span>${esc(cap(n))}<button type="button" data-untrack="${esc(n)}" aria-label="取消追蹤 ${esc(cap(n))}">×</button></span>`).join('')
+    : '<span class="hint">尚未追蹤任何美睫師。</span>';
+}
+function renderFoot() {
+  const doc = state.months.get(state.current);
+  const when = state.generatedAt ? new Date(state.generatedAt) : null;
+  $('#footSource').textContent = doc ? `資料來源：${doc.source || '薪資單'}${when && !isNaN(when) ? `（資料檔更新於 ${when.toLocaleDateString('zh-TW')}）` : ''}` : '';
+}
+
+/* ---------- trend chart ---------- */
+function visibleMonths() {
+  const all = state.order;
+  if (state.range === 'all' || all.length <= 12) return all;
+  const ci = Math.max(all.indexOf(state.current), 11);
+  return all.slice(Math.max(0, ci - 11), ci + 1);
+}
+function valueOf(id, name, metric) {
+  const s = lookup(id, name);
+  if (!s) return null;
+  if (metric === 'rank') return s.rank;
+  if (metric === 'score') return s.score;
+  return s[metric] == null ? null : s[metric];
+}
+function unionNames(months) {
+  const seen = new Set(), out = [];
+  ranked(state.current).forEach(s => { seen.add(s.name); out.push(s.name); });
+  months.forEach(id => ranked(id).forEach(s => { if (!seen.has(s.name)) { seen.add(s.name); out.push(s.name); } }));
+  return out;
+}
+function niceTicks(max, count) {
+  if (max <= 0) return [0, 1];
+  const raw = max / count, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
+  const top = Math.ceil(max / step) * step, ticks = [];
+  for (let v = 0; v <= top + 1e-9; v += step) ticks.push(Math.round(v * 1000) / 1000);
+  return ticks;
+}
+function fmtVal(v, metric) {
+  if (v == null) return '—';
+  if (metric === 'rank') return `#${v}`;
+  if (metric === 'score') return pct(v);
+  return fmt(v);
+}
+let chartGeom = null;
+function renderTrend() {
+  const box = $('#chart'), months = visibleMonths();
+  if (!months.length) { box.innerHTML = ''; return; }
+  const W = Math.max(320, Math.floor(box.clientWidth || 800));
+  const narrow = W < 560;
+  const H = narrow ? 320 : 380;
+  const M = { top: 20, right: narrow ? 70 : 104, bottom: 44, left: 46 };
+  const iw = W - M.left - M.right, ih = H - M.top - M.bottom, n = months.length;
+  const x = i => M.left + (n === 1 ? iw / 2 : i * iw / (n - 1));
+  const metric = state.metric;
+  const names = unionNames(months);
+  const series = names.map(nm => ({ name: nm, pts: months.map((id, i) => ({ i, id, v: valueOf(id, nm, metric) })) }));
+  const allVals = series.flatMap(s => s.pts.map(p => p.v).filter(v => v != null));
+  let ticks, y;
+  if (metric === 'rank') {
+    const yMax = Math.max(2, ...allVals);
+    y = v => M.top + (v - 1) / (yMax - 1) * ih;
+    ticks = []; const step = yMax > 12 ? 2 : 1; for (let v = 1; v <= yMax; v += step) ticks.push(v); if (ticks[ticks.length - 1] !== yMax) ticks.push(yMax);
+  } else if (metric === 'score') {
+    ticks = [0, 0.2, 0.4, 0.6, 0.8, 1];
+    y = v => M.top + ih - Math.min(v, 1) * ih;
+  } else {
+    ticks = niceTicks(Math.max(1, ...allVals), 5);
+    const yMax = ticks[ticks.length - 1];
+    y = v => M.top + ih - v / yMax * ih;
+  }
+  const fmtTick = v => metric === 'score' ? Math.round(v * 100) + '%' : v;
+  const sel = tracked();
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(TREND_METRICS.find(m => m.key === metric).label)}逐月趨勢圖">`;
+  const ci = months.indexOf(state.current);
+  if (ci >= 0) { const half = n > 1 ? iw / (n - 1) / 2 : iw / 2; svg += `<rect class="band" x="${(x(ci) - half).toFixed(1)}" y="${M.top - 10}" width="${(half * 2).toFixed(1)}" height="${ih + 20}" rx="8"/>`; }
+  ticks.forEach(t => { const yy = y(t).toFixed(1); svg += `<line class="grid" x1="${M.left}" x2="${M.left + iw}" y1="${yy}" y2="${yy}"/><text class="tick" x="${M.left - 8}" y="${yy}" text-anchor="end" dominant-baseline="middle">${fmtTick(t)}</text>`; });
+  const labelEvery = n > 14 && narrow ? 2 : 1;
+  months.forEach((id, i) => {
+    const [yy, mm] = id.split('-');
+    if (i % labelEvery === 0 || i === n - 1) svg += `<text class="tick" x="${x(i).toFixed(1)}" y="${H - M.bottom + 18}" text-anchor="middle">${+mm}月</text>`;
+    if (i === 0 || months[i - 1].slice(0, 4) !== yy) svg += `<text class="tick year" x="${x(i).toFixed(1)}" y="${H - M.bottom + 32}" text-anchor="middle">${yy}</text>`;
+  });
+  const pathD = pts => {
+    let d = '', open = false;
+    pts.forEach(p => { if (p.v == null) { open = false; return; } d += `${open ? 'L' : 'M'}${x(p.i).toFixed(1)} ${y(p.v).toFixed(1)}`; open = true; });
+    return d;
+  };
+  const ordered = [...series.filter(s => !sel.includes(s.name)), ...series.filter(s => sel.includes(s.name))];
+  const labels = [];
+  ordered.forEach(s => {
+    const color = colorOf(s.name), d = pathD(s.pts);
+    if (!d) return;
+    const hover = state.hover === s.name && !color;
+    svg += `<path class="line ${color ? 'sel' : ''} ${hover ? 'hover' : ''}" d="${d}" ${color ? `style="stroke:${color}"` : ''}/>`;
+    if (color) {
+      s.pts.forEach(p => { if (p.v != null) svg += `<circle class="pt" cx="${x(p.i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4" style="fill:${color}"/>`; });
+      const last = [...s.pts].reverse().find(p => p.v != null);
+      if (last) labels.push({ x: x(last.i) + 9, y: y(last.v), text: `${cap(s.name)} ${fmtVal(last.v, metric)}` });
+    } else if (hover) {
+      const lp = [...s.pts].reverse().find(p => p.v != null);
+      if (lp) labels.push({ x: x(lp.i) + 9, y: y(lp.v), text: `${cap(s.name)} ${fmtVal(lp.v, metric)}` });
+    }
+  });
+  labels.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < 14) labels[i].y = labels[i - 1].y + 14;
+  for (let i = labels.length - 2; i >= 0; i--) if (labels[i + 1].y - labels[i].y < 14) labels[i].y = labels[i + 1].y - 14;
+  labels.forEach(l => { svg += `<text class="end-label" x="${l.x.toFixed(1)}" y="${l.y.toFixed(1)}" dominant-baseline="middle">${esc(l.text)}</text>`; });
+  ordered.forEach(s => { const d = pathD(s.pts); if (d) svg += `<path class="hit" d="${d}" data-name="${esc(s.name)}"/>`; });
+  svg += '</svg>';
+  box.innerHTML = svg;
+  chartGeom = { x, n, months, W };
+}
+
+/* ---------- tracking ---------- */
+function toggleTrack(name) {
+  const i = slotOf(name);
+  if (i >= 0) state.slots[i] = null;
+  else { let free = state.slots.indexOf(null); if (free < 0) free = 0; state.slots[free] = name; }
+  remember(); renderTable(); renderChips(); renderTrend();
+}
+function defaultTracking() {
+  if (tracked().length || !state.current) return;
+  ranked(state.current).filter(s => s.rank != null).slice(0, 3).forEach((s, i) => { state.slots[i] = s.name; });
+}
+
+/* ---------- tooltip ---------- */
+function showTip(evt, name) {
+  if (!chartGeom) return;
+  const box = $('#chart'), rect = box.getBoundingClientRect();
+  const px = (evt.clientX - rect.left) * (chartGeom.W / rect.width);
+  let best = 0, bd = Infinity;
+  for (let i = 0; i < chartGeom.n; i++) { const d = Math.abs(chartGeom.x(i) - px); if (d < bd) { bd = d; best = i; } }
+  const id = chartGeom.months[best], s = lookup(id, name);
+  const tip = $('#tip');
+  if (!s) { tip.hidden = true; return; }
+  const rows = [['名次', s.rank == null ? '—' : `#${s.rank}`], ['達標率', pct(s.score)]];
+  if (state.metric !== 'rank' && state.metric !== 'score') { const m = METRICS.find(m => m.key === state.metric); rows.push([m.label, fmt(s[m.key])]); }
+  tip.innerHTML = `<div><b>${esc(cap(name))}</b> · ${esc(monthLabel(id))}</div>` + rows.map(r => `<div class="tt-row"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+  tip.hidden = false;
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let left = evt.clientX - rect.left + 14, top = evt.clientY - rect.top - th - 10;
+  if (left + tw > rect.width) left = evt.clientX - rect.left - tw - 14;
+  if (top < 0) top = evt.clientY - rect.top + 16;
+  tip.style.left = `${Math.max(0, left)}px`; tip.style.top = `${top}px`;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  const sortBtn = e.target.closest('[data-sort]');
+  if (sortBtn) {
+    const k = sortBtn.dataset.sort;
+    if (state.sort.key === k) state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
+    else state.sort = { key: k, dir: k === 'rank' || k === 'name' ? 'asc' : 'desc' };
+    renderTable(); return;
+  }
+  const trackBtn = e.target.closest('[data-track]');
+  if (trackBtn) { toggleTrack(trackBtn.dataset.track); return; }
+  const un = e.target.closest('[data-untrack]');
+  if (un) { toggleTrack(un.dataset.untrack); return; }
+  const met = e.target.closest('[data-metric]');
+  if (met) { state.metric = met.dataset.metric; remember(); renderMetricSeg(); renderTrend(); return; }
+  const rng = e.target.closest('[data-range]');
+  if (rng) { state.range = rng.dataset.range; remember(); renderMetricSeg(); renderTrend(); return; }
+  const hit = e.target.closest('.hit');
+  if (hit) { toggleTrack(hit.dataset.name); return; }
+});
+const chartBox = $('#chart');
+chartBox.addEventListener('mousemove', e => {
+  const hit = e.target.closest('.hit');
+  if (!hit) { if (state.hover) { state.hover = null; renderTrend(); } $('#tip').hidden = true; return; }
+  const name = hit.dataset.name;
+  if (state.hover !== name) { state.hover = name; renderTrend(); }
+  showTip(e, name);
+});
+chartBox.addEventListener('mouseleave', () => { $('#tip').hidden = true; if (state.hover) { state.hover = null; renderTrend(); } });
+if (window.ResizeObserver) {
+  let t = null;
+  new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => { if (state.order.length && !$('#app').hidden) renderTrend(); }, 80); }).observe(chartBox);
+}
+
+/* ---------- update panel ---------- */
+const overlay = $('#overlay'), yearSel = $('#yearSel'), monthSel = $('#monthSel');
+function openPanel() {
+  resetPanel();
+  $('#repoLink').href = REPO_URL;
+  const cur = state.current;
+  $('#deleteBox').hidden = !cur;
+  if (cur) $('#deleteLabel').textContent = `目前顯示的是 ${monthLabel(cur)}。移除後畫面會更新，並下載新的 data.json 供覆蓋。`;
+  overlay.hidden = false;
+  $('#btnClose').focus();
+}
+function closePanel() { overlay.hidden = true; state.pending = null; }
+function resetPanel() {
+  $('#parseError').hidden = true; $('#parseResult').hidden = true; $('#saveNote').hidden = true; $('#fileInput').value = '';
+  $('#pwNote').textContent = ''; $('#newPw').value = ''; $('#newPw2').value = '';
+  $('#pwBox').open = false; $('#deleteBox').open = false; $('#publishHelp').open = false;
+}
+function fillMonthSelects(month) {
+  const now = new Date();
+  const years = new Set([now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1]);
+  state.order.forEach(id => years.add(+id.slice(0, 4)));
+  if (month) years.add(+month.slice(0, 4));
+  yearSel.innerHTML = [...years].sort().map(yv => `<option value="${yv}">${yv}年</option>`).join('');
+  monthSel.innerHTML = Array.from({ length: 12 }, (_, i) => { const mm = String(i + 1).padStart(2, '0'); return `<option value="${mm}">${i + 1}月</option>`; }).join('');
+  const [yv, mv] = (month || `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`).split('-');
+  yearSel.value = yv; monthSel.value = mv;
+  updateOverwriteNote();
+}
+function selectedMonthId() { return `${yearSel.value}-${monthSel.value}`; }
+function updateOverwriteNote() {
+  const id = selectedMonthId();
+  $('#overwriteNote').textContent = state.months.has(id) ? `（${monthLabel(id)} 已有資料，將覆蓋）` : '（新月份）';
+}
+yearSel.addEventListener('change', updateOverwriteNote); monthSel.addEventListener('change', updateOverwriteNote);
+
+function cellValue(ws, r, c) {
+  const cell = ws[XLSX.utils.encode_cell({ r, c })];
+  if (!cell) return null;
+  if (cell.t === 'e') return null;
+  if (cell.t === 'n') return cell.v;
+  if (cell.t === 'b') return cell.v ? 1 : 0;
+  if (cell.t === 's' || cell.t === 'str') return String(cell.v);
+  return cell.v == null ? null : cell.v;
+}
+function toNum(v) {
+  if (typeof v === 'number') return isFinite(v) ? v : null;
+  if (typeof v === 'string') { const s = v.trim().replace(/[%,]/g, ''); if (s === '') return null; const n = Number(s); return isFinite(n) ? (v.includes('%') ? n / 100 : n) : null; }
+  return null;
+}
+function toCount(v) { const n = toNum(v); return n == null ? null : (Math.abs(n - Math.round(n)) < 1e-9 ? Math.round(n) : Math.round(n * 100) / 100); }
+function toRate(v) { const n = toNum(v); return n == null ? null : round4(n > 1.5 ? n / 100 : n); }
+
+function parseWorkbook(wb, fileName) {
+  const norm = s => String(s).replace(/\s/g, '');
+  const sheetName = wb.SheetNames.find(nm => norm(nm) === '一部考核總表');
+  if (!sheetName) throw new Error(`找不到「一部考核總表」工作表。檔案中的工作表：${wb.SheetNames.slice(0, 8).join('、')}${wb.SheetNames.length > 8 ? '…' : ''}`);
+  const ws = wb.Sheets[sheetName];
+  const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:S40');
+  const maxR = Math.min(range.e.r, 120), maxC = Math.min(range.e.c, 60);
+  const labelRow = {};
+  for (let r = 0; r <= maxR; r++) { const v = cellValue(ws, r, 0); if (typeof v === 'string' && v.trim() && !(v.trim() in labelRow)) labelRow[v.trim()] = r; }
+  const need = label => { if (!(label in labelRow)) throw new Error(`「一部考核總表」中找不到「${label}」這一列（A 欄）。`); return labelRow[label]; };
+  const opt = label => (label in labelRow ? labelRow[label] : null);
+  const rows = { clients: need('當月客數'), newClients: need('當月新客數'), members: need('當月入會客數'), walkIn: need('現場預約客數'), ig: need('IG分享數'), google: need('Google好評'), score: need('達標率') };
+  const partRows = { ig: opt('IG分享'), google: opt('新客google好評率'), member: opt('新客入會率'), walkIn: opt('現場預約率'), volume: opt('客量'), photo: opt('紀錄照上傳率') };
+  const photoRow = opt('微信照片上傳率');
+  const warnings = [], staff = [], seen = new Set();
+  for (let c = 3; c <= maxC; c++) {
+    const nm = cellValue(ws, 2, c);
+    if (nm == null || String(nm).trim() === '') continue;
+    const name = String(nm).trim().toLowerCase();
+    if (seen.has(name)) { warnings.push(`名字「${cap(name)}」在第 3 列出現兩次，只保留第一個。`); continue; }
+    seen.add(name);
+    const s = { name, level: toCount(cellValue(ws, 1, c)) };
+    for (const k of ['clients', 'newClients', 'members', 'walkIn', 'ig', 'google']) s[k] = toCount(cellValue(ws, rows[k], c));
+    s.score = toRate(cellValue(ws, rows.score, c));
+    s.photoRate = photoRow == null ? null : toRate(cellValue(ws, photoRow, c));
+    s.parts = {};
+    for (const [k, r] of Object.entries(partRows)) s.parts[k] = r == null ? null : toRate(cellValue(ws, r, c));
+    if (s.score == null) warnings.push(`${cap(name)} 的達標率無法讀取（可能是 #DIV/0! 或空白），會排在最後。`);
+    if (s.clients == null) warnings.push(`${cap(name)} 的當月客數是空白。`);
+    staff.push(s);
+  }
+  if (!staff.length) throw new Error('第 3 列從 D 欄起沒有讀到任何美睫師名稱。');
+  let month = null, rangeText = null;
+  for (const nm of wb.SheetNames) {
+    const w = wb.Sheets[nm], a1 = cellValue(w, 0, 0);
+    if (typeof a1 === 'string' && a1.includes('员工业绩统计表')) {
+      const e3 = cellValue(w, 2, 4);
+      if (typeof e3 === 'string') { const m = e3.match(/(\d{4})-(\d{2})-\d{2}/); if (m) { month = `${m[1]}-${m[2]}`; rangeText = e3.replace(/^[^：:]*[：:]/, '').trim(); break; } }
+    }
+  }
+  if (!month) { const m = fileName.match(/(\d{2})[\/_\-](\d{2})(?=\D|$)/); if (m && +m[2] >= 1 && +m[2] <= 12) month = `20${m[1]}-${m[2]}`; }
+  if (!month) warnings.push('無法從檔案判斷月份，請在上方選擇正確的資料月份。');
+  return { month, warnings, doc: { month, label: null, source: fileName.replace(/\.(xlsx|xlsm|xls)$/i, ''), range: rangeText, staff } };
+}
+
+function handleFile(file) {
+  $('#parseError').hidden = true; $('#parseResult').hidden = true; $('#saveNote').hidden = true; state.pending = null;
+  if (!file) return;
+  if (typeof XLSX === 'undefined') { showParseError('試算表解析元件尚未載入，請重新整理頁面後再試。'); return; }
+  const reader = new FileReader();
+  reader.onerror = () => showParseError('讀取檔案失敗，請再試一次。');
+  reader.onload = () => {
+    try {
+      const wb = XLSX.read(new Uint8Array(reader.result), { type: 'array', cellDates: false });
+      const result = parseWorkbook(wb, file.name);
+      state.pending = result;
+      showPreview(result, file);
+    } catch (err) { showParseError(err && err.message ? err.message : '無法解析這個檔案。'); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function showParseError(msg) { const el = $('#parseError'); el.textContent = msg; el.hidden = false; }
+function showPreview(result, file) {
+  fillMonthSelects(result.month);
+  const staff = result.doc.staff;
+  const scored = staff.filter(s => s.score != null).length;
+  $('#parseMeta').textContent = `檔案 ${file.name}（${(file.size / 1024).toFixed(0)} KB）· 讀到 ${staff.length} 位美睫師，${scored} 位有達標率${result.doc.range ? ` · 統計期間 ${result.doc.range}` : ''}。`;
+  const wl = $('#parseWarnings'); wl.innerHTML = result.warnings.map(w => `<li>${esc(w)}</li>`).join(''); wl.hidden = !result.warnings.length;
+  const sorted = [...staff].sort((a, b) => (b.score == null ? -1 : b.score) - (a.score == null ? -1 : a.score));
+  $('#previewTable').innerHTML = `<thead><tr><th class="num">#</th><th>美睫師</th><th class="num">達標率</th>${METRICS.map(m => `<th class="num">${m.short}</th>`).join('')}</tr></thead><tbody>` +
+    sorted.map((s, i) => `<tr><td class="num">${s.score == null ? '–' : i + 1}</td><td>${esc(cap(s.name))}${s.level != null ? ` <span class="lv">Lv.${esc(s.level)}</span>` : ''}</td><td class="num">${pct(s.score)}</td>${METRICS.map(m => `<td class="num">${fmt(s[m.key])}</td>`).join('')}</tr>`).join('') + '</tbody>';
+  $('#parseResult').hidden = false;
+}
+
+let toastTimer = null;
+function toast(msg, isError) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (isError ? ' error' : ''); t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, isError ? 6000 : 3500);
+}
+async function applyPending() {
+  if (!state.pending) return;
+  const id = selectedMonthId();
+  const doc = { ...state.pending.doc, month: id, label: monthLabel(id), importedAt: new Date().toISOString(), importedBy: '網頁匯入' };
+  const btn = $('#btnSave'); btn.disabled = true; btn.textContent = '處理中…';
+  try {
+    const docs = state.order.filter(m => m !== id).map(m => state.months.get(m)).concat([doc]);
+    setMonths(docs); state.current = id; remember(); renderAll();
+    await downloadEncrypted(state.password);
+    $('#parseResult').hidden = true; state.pending = null;
+    const n = $('#saveNote'); n.textContent = `${monthLabel(id)} 已套用到畫面，並下載了新的 data.json。把它覆蓋到網站專案後，其他人也看得到。`; n.hidden = false;
+    $('#publishHelp').open = true;
+    toast(`已套用 ${monthLabel(id)}`);
+  } catch (e) { toast('產生資料檔失敗：' + (e && e.message ? e.message : '未知錯誤'), true); }
+  finally { btn.disabled = false; btn.textContent = '套用並下載 data.json'; }
+}
+async function changePassword() {
+  const a = $('#newPw').value, b = $('#newPw2').value, note = $('#pwNote');
+  if (a.length < 6) { note.textContent = '新密碼至少 6 個字。'; return; }
+  if (a !== b) { note.textContent = '兩次輸入的密碼不一樣。'; return; }
+  try {
+    await downloadEncrypted(a);
+    state.password = a; storePassword(a, !!localStorage.getItem('kaohe-pw'));
+    note.textContent = '已下載用新密碼加密的 data.json。覆蓋到網站後，大家就改用新密碼登入；這台裝置已先記住新密碼。';
+    $('#newPw').value = ''; $('#newPw2').value = '';
+  } catch (e) { note.textContent = '產生失敗：' + (e && e.message ? e.message : '未知錯誤'); }
+}
+async function removeCurrent() {
+  const id = state.current; if (!id) return;
+  const docs = state.order.filter(m => m !== id).map(m => state.months.get(m));
+  setMonths(docs); remember(); renderAll();
+  try { await downloadEncrypted(state.password); toast(`已移除 ${monthLabel(id)}，並下載新的 data.json`); $('#deleteBox').hidden = true; }
+  catch (e) { toast('產生資料檔失敗：' + (e && e.message ? e.message : '未知錯誤'), true); }
+}
+
+$('#btnUpdate').addEventListener('click', openPanel);
+$('#btnClose').addEventListener('click', closePanel);
+$('#btnCancel').addEventListener('click', () => { resetPanel(); });
+$('#btnSave').addEventListener('click', applyPending);
+$('#btnChangePw').addEventListener('click', changePassword);
+$('#btnDelete').addEventListener('click', removeCurrent);
+overlay.addEventListener('click', e => { if (e.target === overlay) closePanel(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closePanel(); });
+$('#fileInput').addEventListener('change', e => handleFile(e.target.files && e.target.files[0]));
+const drop = $('#drop');
+['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('is-over'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('is-over'); }));
+drop.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) handleFile(f); });
+
+/* ---------- gate ---------- */
+function storePassword(pw, persist) {
+  try { sessionStorage.removeItem('kaohe-pw'); localStorage.removeItem('kaohe-pw'); (persist ? localStorage : sessionStorage).setItem('kaohe-pw', pw); } catch (e) {}
+}
+function storedPassword() {
+  try { return localStorage.getItem('kaohe-pw') || sessionStorage.getItem('kaohe-pw') || null; } catch (e) { return null; }
+}
+async function loadDataFile() {
+  if (state.dataFile) return state.dataFile;
+  const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('讀不到資料檔 data.json（HTTP ' + res.status + '）');
+  state.dataFile = await res.json();
+  return state.dataFile;
+}
+async function unlock(password, persist) {
+  const file = await loadDataFile();
+  const payload = await decryptFile(file, password);
+  state.password = password;
+  storePassword(password, persist);
+  state.generatedAt = payload.generatedAt || null;
+  setMonths(payload.months || []);
+  defaultTracking();
+  $('#gate').hidden = true; $('#app').hidden = false;
+  renderAll();
+}
+function showGateError(msg) { $('#gateErr').textContent = msg; }
+$('#gateForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const pw = $('#pw').value, btn = $('#gateBtn');
+  if (!pw) return;
+  if (!(window.crypto && crypto.subtle)) { showGateError('此瀏覽器不支援加密功能，請改用 Chrome、Safari 或 Edge 開啟 https 網址。'); return; }
+  btn.disabled = true; btn.textContent = '解鎖中…'; showGateError('');
+  try { await unlock(pw, $('#remember').checked); }
+  catch (err) {
+    if (err && err.name === 'OperationError') showGateError('密碼不正確');
+    else showGateError(err && err.message ? err.message : '無法載入資料');
+  } finally { btn.disabled = false; btn.textContent = '進入'; }
+});
+$('#pwToggle').addEventListener('click', () => { const i = $('#pw'); const show = i.type === 'password'; i.type = show ? 'text' : 'password'; $('#pwToggle').textContent = show ? '隱藏' : '顯示'; });
+$('#btnLogout').addEventListener('click', () => { try { localStorage.removeItem('kaohe-pw'); sessionStorage.removeItem('kaohe-pw'); } catch (e) {} location.reload(); });
+
+async function boot() {
+  restore();
+  const saved = storedPassword();
+  if (saved && window.crypto && crypto.subtle) {
+    $('#gateLead').textContent = '正在解鎖…';
+    try { await unlock(saved, !!localStorage.getItem('kaohe-pw')); return; }
+    catch (e) { try { localStorage.removeItem('kaohe-pw'); sessionStorage.removeItem('kaohe-pw'); } catch (x) {} $('#gateLead').textContent = '密碼已更換，請重新輸入。'; }
+  }
+  $('#pw').focus();
+}
+boot();
+})();
+</script>
+</body>
+</html>
