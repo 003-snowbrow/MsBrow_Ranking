@@ -271,7 +271,7 @@ footer.foot{font-size:12px;color:var(--muted);display:flex;justify-content:space
   <section class="card" id="rankingSec">
     <div class="sec-head">
       <h2 id="rankingTitle">完整排名</h2>
-      <p class="hint">點欄位標題可排序；點美睫師名字可在下方趨勢圖中追蹤（最多 5 位）。</p>
+      <p class="hint" id="rankingHint">點欄位標題可排序；點美睫師名字可在下方趨勢圖中追蹤（最多 5 位）。</p>
     </div>
     <div class="table-wrap">
       <table id="rankTable" aria-describedby="rankingTitle">
@@ -280,6 +280,22 @@ footer.foot{font-size:12px;color:var(--muted);display:flex;justify-content:space
       </table>
     </div>
     <div class="parts-legend" id="partsLegend"></div>
+  </section>
+
+  <section class="card" id="cumSec">
+    <div class="sec-head">
+      <div>
+        <h2 id="cumTitle">年度累積總排名</h2>
+        <p class="hint" id="cumSub"></p>
+      </div>
+      <p class="hint">依各月達標率的平均排序；六項數據為各月加總。點欄位標題可排序。</p>
+    </div>
+    <div class="table-wrap">
+      <table id="cumTable" aria-labelledby="cumTitle">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </section>
 
   <section class="card" id="trendSec">
@@ -335,8 +351,9 @@ const TREND_METRICS = [
 
 const state = {
   months: new Map(), order: [], current: null, generatedAt: null,
+  roster: new Set(),            // 最新月份出現的美睫師；其他人視為離職，不列入排名與趨勢
   slots: [null, null, null, null, null], metric: 'rank', range: 'recent',
-  sort: { key: 'rank', dir: 'asc' },
+  sort: { key: 'rank', dir: 'asc' }, cumSort: { key: 'rank', dir: 'asc' },
   password: null, skipped: [], fileCount: 0, hover: null,
 };
 const rankCache = new Map();
@@ -368,7 +385,8 @@ function ranked(id) {
   if (rankCache.has(id)) return rankCache.get(id);
   const doc = state.months.get(id);
   if (!doc) return [];
-  const list = (doc.staff || []).map(s => ({ ...s }));
+  // 只排在職（最新月份有出現）的美睫師；離職者仍留在 doc.staff，供團隊合計使用
+  const list = (doc.staff || []).filter(s => state.roster.has(s.name)).map(s => ({ ...s }));
   list.sort((a, b) => {
     const as = a.score == null ? -Infinity : a.score, bs = b.score == null ? -Infinity : b.score;
     if (bs !== as) return bs - as;
@@ -416,7 +434,10 @@ function setMonths(docs) {
   state.months = new Map(docs.filter(d => d && /^\d{4}-\d{2}$/.test(d.month)).map(d => [d.month, d]));
   state.order = [...state.months.keys()].sort();
   rankCache.clear();
-  if (!state.current || !state.months.has(state.current)) state.current = state.order[state.order.length - 1] || null;
+  const latest = state.order[state.order.length - 1];
+  state.roster = new Set(latest ? (state.months.get(latest).staff || []).map(s => s.name) : []);
+  state.slots = state.slots.map(n => (n && state.roster.has(n)) ? n : null);
+  if (!state.current || !state.months.has(state.current)) state.current = latest || null;
 }
 function renderAll() {
   if (!state.order.length) {
@@ -424,9 +445,10 @@ function renderAll() {
     $('#team').innerHTML = '<p class="hint">尚無考核資料：雲端硬碟資料夾裡沒有可讀取的薪資單。</p>';
     renderNotice(); renderFoot();
     $('#rankTable thead').innerHTML = ''; $('#rankTable tbody').innerHTML = ''; $('#chart').innerHTML = ''; $('#trendChips').innerHTML = '';
+    $('#cumSec').hidden = true;
     return;
   }
-  renderMonths(); renderNotice(); renderHero(); renderTable(); renderMetricSeg(); renderChips(); renderTrend(); renderFoot();
+  renderMonths(); renderNotice(); renderHero(); renderTable(); renderCumulative(); renderMetricSeg(); renderChips(); renderTrend(); renderFoot();
 }
 
 function renderMonths() {
@@ -453,19 +475,24 @@ function renderHero() {
       <p class="pod-score"><span class="num">${pct(s.score)}</span><span class="unit">達標率</span></p>
       <dl class="pod-metrics">${METRICS.map(m => `<div><dt>${m.label}</dt><dd>${fmt(s[m.key])}</dd></div>`).join('')}</dl>
     </article>`).join('');
-  const p = prevId(id), prevList = p ? ranked(p) : null;
+  // 團隊合計用該月全部美睫師（含已離職者），不受在職名單影響
+  const all = doc.staff || [];
+  const p = prevId(id), prevAll = p ? (state.months.get(p).staff || []) : null;
   const stats = METRICS.map(m => {
-    const v = sum(list, m.key);
+    const v = sum(all, m.key);
     let diff = '';
-    if (prevList) {
-      const d = v - sum(prevList, m.key);
+    if (prevAll) {
+      const d = v - sum(prevAll, m.key);
       diff = `<span class="stat-diff ${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d > 0 ? '+' : ''}${d.toLocaleString('zh-TW')} 較上月</span>`;
     }
     return `<div class="stat"><span class="stat-label">${m.label}</span><span class="stat-value">${fmt(v)}</span>${diff}</div>`;
   }).join('');
+  const gone = all.length - list.length;
   $('#team').innerHTML = `
-    <h2 class="team-title">團隊合計<span class="team-sub">${esc(doc.label || monthLabel(id))} · ${list.length} 位美睫師${doc.range ? ' · ' + esc(doc.range) : ''}</span></h2>
+    <h2 class="team-title">團隊合計<span class="team-sub">${esc(doc.label || monthLabel(id))} · ${all.length} 位美睫師${gone > 0 ? `（含 ${gone} 位已離職）` : ''}${doc.range ? ' · ' + esc(doc.range) : ''}</span></h2>
     <div class="team-grid">${stats}</div>`;
+  const latest = state.order[state.order.length - 1];
+  $('#rankingHint').textContent = `只列 ${monthLabel(latest)} 在職的 ${state.roster.size} 位美睫師，已離職者不列入排名但仍計入團隊合計。點欄位標題可排序；點名字可在趨勢圖中追蹤（最多 5 位）。`;
 }
 
 const COLS = [
@@ -512,6 +539,76 @@ function renderTable() {
     </tr>`;
   }).join('');
   $('#partsLegend').innerHTML = `<span style="color:var(--muted)">達標率組成</span>` + PARTS.map(p => `<span><i style="--seg:${p.color}"></i>${p.label}</span>`).join('');
+}
+
+/* ---------- 年度累積總排名 ---------- */
+const CUM_COLS = [
+  { key: 'rank', label: '名次', num: true },
+  { key: 'name', label: '美睫師' },
+  { key: 'avg', label: '平均達標率', num: true },
+  ...METRICS.map(m => ({ key: m.key, label: '累積' + m.label.replace(/^當月/, ''), num: true })),
+  { key: 'top3', label: '前三名次數', num: true },
+];
+function yearMonths() {
+  const y = state.current ? state.current.slice(0, 4) : null;
+  return y ? state.order.filter(id => id.slice(0, 4) === y) : [];
+}
+function cumulativeRows(months) {
+  const latest = state.order[state.order.length - 1];
+  const rows = [...state.roster].map(name => {
+    const row = { name, level: (lookup(latest, name) || {}).level ?? null, months: 0, scored: 0, scoreSum: 0, top3: 0 };
+    METRICS.forEach(m => { row[m.key] = 0; });
+    months.forEach(id => {
+      const s = lookup(id, name);
+      if (!s) return;
+      row.months++;
+      METRICS.forEach(m => { row[m.key] += s[m.key] || 0; });
+      if (s.score != null) { row.scored++; row.scoreSum += s.score; }
+      if (s.rank != null && s.rank <= 3) row.top3++;
+    });
+    row.avg = row.scored ? round4(row.scoreSum / row.scored) : null;
+    return row;
+  });
+  rows.sort((a, b) => {
+    const as = a.avg == null ? -Infinity : a.avg, bs = b.avg == null ? -Infinity : b.avg;
+    if (bs !== as) return bs - as;
+    return (b.clients || 0) - (a.clients || 0);
+  });
+  let rank = 0, prev = null;
+  rows.forEach((r, i) => {
+    if (r.avg == null) { r.rank = null; return; }
+    const k = Math.round(r.avg * 10000);
+    if (prev === null || k !== prev) { rank = i + 1; prev = k; }
+    r.rank = rank;
+  });
+  return rows;
+}
+function renderCumulative() {
+  const sec = $('#cumSec'), months = yearMonths();
+  if (!months.length) { sec.hidden = true; return; }
+  sec.hidden = false;
+  const y = +months[0].slice(0, 4), m1 = +months[0].slice(5), m2 = +months[months.length - 1].slice(5);
+  $('#cumTitle').textContent = `${y} 年累積總排名`;
+  $('#cumSub').textContent = `${m1 === m2 ? `${m1} 月` : `${m1}–${m2} 月`}，共 ${months.length} 個月 · 只列 ${monthLabel(state.order[state.order.length - 1])} 在職的美睫師`;
+  const list = cumulativeRows(months);
+  const { key, dir } = state.cumSort;
+  if (key !== 'rank') list.sort((a, b) => cmpVals(a[key], b[key], dir, key === 'name'));
+  else if (dir === 'desc') list.reverse();
+  const max = {}; METRICS.forEach(m => { max[m.key] = Math.max(0, ...list.map(r => r[m.key] || 0)); });
+  $('#cumTable thead').innerHTML = '<tr>' + CUM_COLS.map(c => {
+    const sorted = key === c.key;
+    return `<th scope="col" class="${c.num ? 'num' : ''} ${sorted ? 'is-sorted' : ''}" aria-sort="${sorted ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}"><button type="button" data-cumsort="${c.key}">${esc(c.label)}<span class="sort-ind">${sorted ? (dir === 'asc' ? '↑' : '↓') : ''}</span></button></th>`;
+  }).join('') + '</tr>';
+  $('#cumTable tbody').innerHTML = list.map(r => {
+    const color = colorOf(r.name);
+    return `<tr class="${color ? 'is-tracked' : ''}" data-name="${esc(r.name)}">
+      <td class="num rank-cell"><span class="rank ${r.rank != null && r.rank <= 3 ? 'r' + r.rank : ''}">${r.rank == null ? '–' : r.rank}</span></td>
+      <td class="name-cell"><button type="button" class="name-btn" data-track="${esc(r.name)}" title="${color ? '取消追蹤' : '加入趨勢圖追蹤'}"><span class="dot" style="${color ? `background:${color}` : ''}"></span>${esc(cap(r.name))}</button>${r.level != null ? `<span class="lv">Lv.${esc(r.level)}</span>` : ''}</td>
+      <td class="num"><span>${pct(r.avg)} <span class="lv" title="有資料的月數">${r.months} 個月</span></span><i class="bar" style="--w:${r.avg == null ? 0 : (r.avg * 100).toFixed(1)}%"></i></td>
+      ${METRICS.map(m => `<td class="num"><span>${fmt(r[m.key])}</span><i class="bar" style="--w:${max[m.key] ? ((r[m.key] || 0) / max[m.key] * 100).toFixed(1) : 0}%"></i></td>`).join('')}
+      <td class="num"><span>${r.top3 ? r.top3 + ' 次' : '—'}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 function renderMetricSeg() {
@@ -656,7 +753,7 @@ function toggleTrack(name) {
   const i = slotOf(name);
   if (i >= 0) state.slots[i] = null;
   else { let free = state.slots.indexOf(null); if (free < 0) free = 0; state.slots[free] = name; }
-  remember(); renderTable(); renderChips(); renderTrend();
+  remember(); renderTable(); renderCumulative(); renderChips(); renderTrend();
 }
 function defaultTracking() {
   if (tracked().length || !state.current) return;
@@ -692,6 +789,13 @@ document.addEventListener('click', e => {
     if (state.sort.key === k) state.sort.dir = state.sort.dir === 'asc' ? 'desc' : 'asc';
     else state.sort = { key: k, dir: k === 'rank' || k === 'name' ? 'asc' : 'desc' };
     renderTable(); return;
+  }
+  const cumBtn = e.target.closest('[data-cumsort]');
+  if (cumBtn) {
+    const k = cumBtn.dataset.cumsort;
+    if (state.cumSort.key === k) state.cumSort.dir = state.cumSort.dir === 'asc' ? 'desc' : 'asc';
+    else state.cumSort = { key: k, dir: k === 'rank' || k === 'name' ? 'asc' : 'desc' };
+    renderCumulative(); return;
   }
   const trackBtn = e.target.closest('[data-track]');
   if (trackBtn) { toggleTrack(trackBtn.dataset.track); return; }

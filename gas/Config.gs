@@ -7,6 +7,8 @@ const CONFIG = {
   FOLDER_ID: '1L7GsmJYGjmi2GkENduBtW1_pLiAPtD5d',
   // 尚未在指令碼屬性設定 PASSWORD 時使用的密碼
   DEFAULT_PASSWORD: 'msbrow2026',
+  // 只顯示這個月份（含）之後的薪資單；更早的檔案完全不讀
+  MIN_MONTH: '2026-01',
   // 要讀的工作表與範圍（至少讀到 A1:S45；表格更大時會自動讀到最後一欄／列）
   SUMMARY_SHEET: '一部考核總表',
   MIN_ROWS: 45,

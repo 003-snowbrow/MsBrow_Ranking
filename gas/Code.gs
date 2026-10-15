@@ -39,7 +39,7 @@ function doGet() {
 
 /**
  * @param {string} password 使用者輸入的密碼
- * @return {{ok:boolean, error?:string, message?:string, months?:Object[], generatedAt?:string, skipped?:Object[], files?:number, parsed?:number}}
+ * @return {{ok:boolean, error?:string, message?:string, months?:Object[], generatedAt?:string, skipped?:Object[], files?:number, parsed?:number, ignored?:number, minMonth?:string}}
  */
 function getData(password) {
   if (!checkPassword_(password)) return { ok: false, error: 'bad_password' };
@@ -96,7 +96,7 @@ function scanFolder_() {
   const seenKeys = {};
   const byMonth = {};      // month -> { doc, updated, name }
   const skipped = [];
-  let fileCount = 0, parsedCount = 0;
+  let fileCount = 0, parsedCount = 0, ignoredCount = 0;
 
   while (files.hasNext()) {
     const file = files.next();
@@ -105,6 +105,7 @@ function scanFolder_() {
     if (name.indexOf('測試') >= 0) continue;            // 測試檔
     const title = matchTitle_(name);
     if (!title) { skipped.push({ name: name, reason: '檔名不是「薪資單_<版本>_YY/MM」格式' }); continue; }
+    if (CONFIG.MIN_MONTH && title.month < CONFIG.MIN_MONTH) { ignoredCount++; continue; }   // 早於 MIN_MONTH 的不讀、不列入
 
     fileCount++;
     const id = file.getId();
@@ -152,7 +153,7 @@ function scanFolder_() {
 
   const months = Object.keys(byMonth).sort().map(function (m) { return byMonth[m].doc; });
   skipped.sort(function (a, b) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; });
-  return { months: months, generatedAt: new Date().toISOString(), skipped: skipped, files: fileCount, parsed: parsedCount };
+  return { months: months, generatedAt: new Date().toISOString(), skipped: skipped, files: fileCount, parsed: parsedCount, ignored: ignoredCount, minMonth: CONFIG.MIN_MONTH || null };
 }
 
 function parseCached_(raw) {
