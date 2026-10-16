@@ -1,6 +1,6 @@
 # MS.BROW · 美睫師考核排名
 
-事業一部每月考核排名網頁。現在是 **Google Apps Script 網頁應用程式**：伺服端直接讀雲端硬碟「薪資單」資料夾裡每月的試算表，
+美睫部門每月考核排名網頁。現在是 **Google Apps Script 網頁應用程式**：伺服端直接讀雲端硬碟「薪資單」資料夾裡每月的試算表，
 新月份的薪資單建好後網頁就會自動出現，不用再手動匯出 xlsx、更新 `data.json`。
 
 - **網址**：https://script.google.com/macros/s/AKfycbysswFGv-ErRkaMmv0-fYc3fFHqe831pbfwfCk3ta0rytf7Np6iDq9TpyQK5ZPneCXDuA/exec
@@ -22,8 +22,10 @@
    「團隊合計」不受影響，仍是該月全部美睫師（含已離職者）的加總，副標會註明「含 N 位已離職」。
 7. **年度累積總排名**：以所選月份那一年、目前有資料的各月為範圍，依各月達標率的**平均**排序（只算有達標率的月份，並標示月數），
    六項數據為各月加總，另列「前三名次數」。
-8. 密碼在伺服端驗證：先看指令碼屬性 `PASSWORD`，沒有設定時用 `gas/Config.gs` 的 `DEFAULT_PASSWORD`（`msbrow2026`）。
-9. 網頁以**部署者的身分**執行（`executeAs: USER_DEPLOYING`，`access: ANYONE_ANONYMOUS`）：看的人不需要 Google 帳號，
+8. **個人每月數據**：排名下方有一個面板，上方按鈕可切換美睫師（只列在職者，依名字排序），顯示該人在當年各月的名次、達標率與六項數據，
+   以及合計／平均；沒有資料的月份（例如尚未到職）標示「無資料」。
+9. 密碼在伺服端驗證：先看指令碼屬性 `PASSWORD`，沒有設定時用 `gas/Config.gs` 的 `DEFAULT_PASSWORD`（`msbrow2026`）。
+10. 網頁以**部署者的身分**執行（`executeAs: USER_DEPLOYING`，`access: ANYONE_ANONYMOUS`）：看的人不需要 Google 帳號，
    也碰不到試算表本身。腳本只要求 `drive.readonly` 與 `spreadsheets.readonly` 兩個唯讀權限。
    因此試算表是用 **Sheets 進階服務（Sheets API v4）** 讀的，不是 `SpreadsheetApp.openById`——後者一定要完整的 `spreadsheets` 權限，
    會出現「指定的權限不足」。每個檔案只需兩次 API 呼叫（工作表清單 + 一次 `batchGet`）。
@@ -74,7 +76,7 @@ python3 tools/preview_gas.py
 |---|---|
 | `gas/Code.gs` | `doGet`、`getData(password)`、掃描資料夾、解析「一部考核總表」、快取 |
 | `gas/Config.gs` | 資料夾 ID、預設密碼、工作表名稱與讀取範圍上限 |
-| `gas/index.html` | 整個前端（密碼閘門、排名、趨勢圖、重新整理、登出） |
+| `gas/index.html` | 整個前端（密碼閘門、排名、累積總排名、個人每月數據、趨勢圖、重新整理、登出） |
 | `gas/appsscript.json` | 時區、權限範圍、網頁應用程式設定 |
 | `gas/.clasp.json` | clasp 對應的 scriptId |
 | `tools/preview_gas.py` | 本機預覽伺服器 |
